@@ -3,11 +3,12 @@ import pymysql
 
 class WORKER:
 
-    def __init__(self, workerid, workername) -> None:
+    def __init__(self, workerid, workername):
         self.workerid = workerid
         self.workername = workername
 
     # 连接数据库
+    @staticmethod
     def connect_db():
         return pymysql.connect(host='localhost', user='root', passwd='12345678', port=3306, db='restaurantproject')
 
@@ -17,7 +18,7 @@ class WORKER:
             db = WORKER.connect_db()
             cursor = db.cursor()
 
-            sql = "INSERT INTO WorkerInfo (workername) VALUES ('" + \
+            sql = "INSERT INTO worker (workername) VALUES ('" + \
                 self.workername + "');"
             print('sql:', sql)
 
@@ -36,7 +37,7 @@ class WORKER:
             db = WORKER.connect_db()
             cursor = db.cursor()
 
-            sql = "DELETE FROM WorkerInfo WHERE workerid=" + \
+            sql = "DELETE FROM worker WHERE workerid=" + \
                 str(self.workerid) + ";"
             print('sql:', sql)
 
@@ -55,7 +56,7 @@ class WORKER:
             db = WORKER.connect_db()
             cursor = db.cursor()
 
-            sql = "SELECT * FROM WorkerInfo WHERE workerid=" + \
+            sql = "SELECT * FROM worker WHERE workerid=" + \
                 str(self.workerid) + ";"
             print('sql:', sql)
 
@@ -81,8 +82,9 @@ class WORKER:
             db = WORKER.connect_db()
             cursor = db.cursor()
 
-            sql = "UPDATE WorkerInfo SET workername='" + \
-                self.workername + "' WHERE workerid=" + str(self.workerid) + ";"
+            sql = "UPDATE worker SET workername='" + \
+                self.workername + "' WHERE workerid=" + \
+                str(self.workerid) + ";"
             print('sql:', sql)
 
             cursor.execute(sql)

@@ -3,7 +3,7 @@ import pymysql
 
 class ODER:
 
-    def __init__(self, oderid, tableid, userid, odertime, oderprice) -> None:
+    def __init__(self, oderid, tableid, userid, odertime, oderprice):
         self.oderid = oderid
         self.tableid = tableid
         self.userid = userid
@@ -11,6 +11,7 @@ class ODER:
         self.oderprice = oderprice
 
     # 连接数据库
+    @staticmethod
     def connect_db():
         return pymysql.connect(host='localhost', user='root', passwd='200525', port=3306, db='restaurantproject')
 
@@ -39,7 +40,8 @@ class ODER:
             db = ODER.connect_db()
             cursor = db.cursor()
 
-            sql = "SELECT * FROM OrderInfo WHERE orderid=" + str(self.orderid) + ";"
+            sql = "SELECT * FROM OrderInfo WHERE orderid=" + \
+                str(self.orderid) + ";"
             print('sql:', sql)
 
             cursor.execute(sql)

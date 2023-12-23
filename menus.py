@@ -1,4 +1,5 @@
 import pymysql
+from prettytable import PrettyTable
 
 
 class MENUS:
@@ -9,6 +10,7 @@ class MENUS:
         self.mprice = str(mprice)
 
     # 连接数据库
+    @staticmethod
     def connect_db():
         return pymysql.connect(host='localhost', user='root', passwd='200525', port=3306, db='restaurantproject')
 
@@ -55,22 +57,49 @@ class MENUS:
             db = MENUS.connect_db()
             cursor = db.cursor()
 
-            sql = "SELECT * FROM MenuInfo WHERE menuid=" + str(self.menuid) + ";"
+            sql = "SELECT * FROM menu WHERE menuid=" + str(self.menuid) + ";"
             print('sql:', sql)
 
             cursor.execute(sql)
             results = cursor.fetchall()
 
             if len(results) > 0:
+                table = PrettyTable()
+                table.field_names = ["菜品编号:", "菜品名称:", "菜品价格:"]
                 for row in results:
-                    print("菜品编号:", row[0])
-                    print("菜品名称:", row[1])
-                    print("菜品价格:", row[2])
+                    table.add_row(row)
             else:
-                print("未找到记录")
+                print("请联系服务员线下点单")
 
         except Exception as e:
-            print('操作错误')
+            print('系统错误，请联系服务员')
+            print(e)
+        finally:
+            db.close()
+
+    @staticmethod
+    def printMenu():
+        try:
+            db = MENUS.connect_db()
+            cursor = db.cursor()
+
+            sql = "SELECT * FROM menus"
+            # print('sql:', sql)
+
+            cursor.execute(sql)
+            results = cursor.fetchall()
+
+            if len(results) > 0:
+                table = PrettyTable()
+                table.field_names = ["菜品编号:", "菜品名称:", "菜品价格:"]
+                for row in results:
+                    table.add_row(row)
+                print(table)
+            else:
+                print("请联系服务员线下点单")
+
+        except Exception as e:
+            print('系统错误，请联系服务员')
             print(e)
         finally:
             db.close()
