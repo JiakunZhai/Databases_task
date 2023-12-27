@@ -22,11 +22,12 @@ class ODER:
             db = ODER.connect_db()
             cursor = db.cursor()
 
-            sql = "INSERT INTO OrderInfo (tableid, userid, workerid, odertime, orderprice) VALUES (" + str(
-                self.tableid) + ", " + str(self.userid) + ", " + str(self.workerid) + ", '" + "now()" + "', " + str(self.oderprice) + ");"
+            sql = "INSERT INTO oder (tableid, userid, workerid, odertime, oderprice) VALUES (%s, %s, %s, CURRENT_TIMESTAMP, %s)"
+            values = (str(self.tableid), str(self.userid),
+                      str(self.workerid), str(self.oderprice))
             print('sql:', sql)
 
-            cursor.execute(sql)
+            cursor.execute(sql, values)
             db.commit()
             oderid = cursor.lastrowid
             print('数据插入成功!')
@@ -43,7 +44,7 @@ class ODER:
             db = ODER.connect_db()
             cursor = db.cursor()
 
-            sql = "SELECT * FROM OrderInfo WHERE orderid=" + \
+            sql = "SELECT * FROM OrderInfo WHERE oderid=" + \
                 str(self.oderid) + ";"
             print('sql:', sql)
 
@@ -73,8 +74,8 @@ class ODER:
             db = ODER.connect_db()
             cursor = db.cursor()
 
-            sql = "UPDATE OrderInfo SET tableid=" + str(self.tableid) + ", userid=" + str(self.userid) + ", workerid=" + str(
-                self.workerid) + ", odertime='" + "now()" + "', orderprice=" + str(self.oderprice) + " WHERE orderid=" + str(self.oderid) + ";"
+            sql = "UPDATE oder SET tableid=" + str(self.tableid) + ", userid=" + str(self.userid) + ", workerid=" + str(
+                self.workerid) + ", odertime='" + "now()" + "', oderprice=" + str(self.oderprice) + " WHERE oderid=" + str(self.oderid) + ";"
             print('sql:', sql)
 
             cursor.execute(sql)

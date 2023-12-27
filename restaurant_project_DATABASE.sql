@@ -57,7 +57,7 @@ INSERT INTO FoodTable(tablenumber, tablestate) VALUES
 (4,'N'),
 (4,'Y'),
 (6,'N');
-INSERT INTO Menus VALUES (menuname, mprice)
+INSERT INTO Menus(menuname, mprice) VALUES
 ('大盘鸡','35'),
 ('土豆丝','12'),
 ('红焖羊肉','40'),
@@ -67,3 +67,9 @@ INSERT INTO Menus VALUES (menuname, mprice)
 ('红烧肉','30'),
 ('青椒炒肉','18'),
 ('佛跳墙','60');
+
+INSERT INTO Worker(workerid, wokername) VALUES
+("10001", "王五"),
+("10002", "李红"),
+("10003", "张三")；
+

@@ -11,8 +11,8 @@ def insert_menuoder(oderid, menuid, menunum):
         db = connect_db()
         cursor = db.cursor()
         sql = "INSERT INTO menuoder (oderid, menuid, menunum) VALUES ('" + \
-              oderid + "', '" + menuid + "', '" + menunum + "');"
-        print('sql:', sql)
+            str(oderid) + "', '" + str(menuid) + "', '" + str(menunum) + "');"
+        # print('sql:', sql)
         cursor.execute(sql)
         db.commit()
     except Exception as e:

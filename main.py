@@ -4,33 +4,37 @@ from worker import *
 from oder import *
 from foodtable import *
 from menuoder import *
-import pymysql
+# import pymysql
 
 # 定义全局变量
 menuOrderList = []  # 点菜编号
 tablenum = 0        # 餐桌编号
 oderid = 0          # 订单id
-total_cost = 0      # 订单总价
+total_cost = 0      # 订单总价          # 用户编号
+workerid = '10001'        # 服务员编号
 userid = 0
-workerid = 0
-
 # 主要函数封装
+
+
 class MAIN:
 
-    def signon(userid):
+    def signon():
+        global userid
         username = str(input("signon > 用户名："))
         userphone = str(input("signon > 手机号码："))
         newuser = USER(None, username, userphone)
         userid = newuser.insert_user()
 
     def login():
+        global menuOrderList, tablenum, total_cost, userid
         username = str(input("login > 用户名："))
         userphone = str(input("login > 手机号码："))
         user = USER(None, username, userphone)
         userdb = user.login()
         if userdb[1] == 1:
             print("登录成功")
-            PAGE.homepage(menuOrderList, tablenum, total_cost)
+            userid = userdb[0].userid
+            PAGE.homepage()
 
     def delete():
         userid = str(input("用户编号："))
@@ -47,7 +51,8 @@ class MAIN:
         user.update_user()
 
         # 选择餐桌
-    def foodTableSelect(tablenum):
+    def foodTableSelect():
+        global tablenum
         num = int(input("请输入用餐人数：（数字）"))
         num_table = FOODTABLE(None, num, None)
         res = num_table.select_table()
@@ -55,7 +60,8 @@ class MAIN:
             tablenum = str(input("请输入您选择的餐桌编号："))
             # return tablenum
 
-    def menusSelect(menuOrderList, total_cost):
+    def menusSelect():
+        global menuOrderList, total_cost
         MENUS.printMenu()
         try:
             db = MENUS.connect_db()
@@ -105,12 +111,13 @@ class MAIN:
         finally:
             db.close()
 
-    def oder_inster(oderid, userid, ):
+    def oder_inster():
+        global oderid, userid, total_cost, menuOrderList, tablenum
         # 对现在的点餐数量结账
         print("欢迎用餐".center(20, '='))
-        select = str(input("是否结账？Y/N"))
+        select = str(input("结账 > 是否结账？(Y/N): "))
 
-        if select == "Y":
+        if select == "Y" or select == 'y':
             if menuOrderList:
                 print("")
                 print("请确认您的点单情况".center(26, "="))
@@ -123,23 +130,25 @@ class MAIN:
 
                 table.add_row(["总计", "", "", "", total_cost])
                 print(table)
-                res = str(input("请确认订单是是否有误？Y/N"))
-                if res == 'Y':
+                res = str(input("结账 > 请确认订单是是否有误？(Y/N): "))
+                if res == 'N' or res == 'n':
                     table = PrettyTable()
                     table.add_row(["总计", total_cost])
                     print(table)
-                    oder = ODER(None, tablenum, userid, None, total_cost)
+                    oder = ODER(None, tablenum, userid,
+                                None, total_cost, workerid)
                     oderid = oder.insert_order()
-
+                    for i in range(0, len(menuOrderList)):
+                        insert_menuoder(
+                            oderid, menuOrderList[i][0], menuOrderList[i][2])
+                else:
+                    print("结账 > 系统提示：请联系服务员核对订单！")
 
             else:
                 print("您还未点任何菜品")
 
-
         else:
             return
-
-
 
 
 # 界面封装
@@ -148,19 +157,20 @@ class MAIN:
 class PAGE:
 
     def mainPage():
+        global userid
         while True:
             print("欢迎用餐 V0.1".center(20, '='))
-            print("signon ---------- 登录")
+            print("login ----------- 登录")
             print("signup ---------- 注册")
             print("deleteuser ------ 注销")
             print("updateinfo ------ 修改")
             print("exit------------- 退出")
             print("".center(23, '='))
-            s = str(input("main>")).strip().lower()
-            if s == 'signon':
+            s = str(input("登录界面>")).strip().lower()
+            if s == 'login':
                 MAIN.login()
             elif s == 'signup':
-                MAIN.signon(userid)
+                MAIN.signon()
             elif s == 'deleteuser':
                 MAIN.delete()
             elif s == 'updateinfo':
@@ -170,7 +180,8 @@ class PAGE:
             else:
                 print('输入错误')
 
-    def homepage(menuOrderList, tablenum, total_cost):
+    def homepage():
+        global menuOrderList, tablenum, total_cost
         while True:
             print("欢迎用餐 V0.1".center(20, '='))
             print("menus ---------- 菜单")
@@ -182,16 +193,16 @@ class PAGE:
 
             s = str(input("点餐界面 > "))
             if s == 'menus':
-                MAIN.menusSelect(menuOrderList, total_cost)
+                MAIN.menusSelect()
             elif s == 'selectTable':
-                MAIN.foodTableSelect(tablenum)
+                MAIN.foodTableSelect()
             elif s == 'oder':
                 # todo 暂时没有写函数
                 # 这个地方应该是点菜的函数这个函数应该将点了什么菜输出一遍，
                 # 然后再订单菜谱表中插入，但是获取的订单编号应该如何做？
                 # 订单编号可以在插入的时候获取到，那么还需要讲
 
-                pass
+                MAIN.oder_inster()
             elif s == 'exit':
                 break
 
