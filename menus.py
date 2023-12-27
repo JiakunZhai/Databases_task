@@ -95,6 +95,7 @@ class MENUS:
                 for row in results:
                     table.add_row(row)
                 print(table)
+                return results
             else:
                 print("请联系服务员线下点单")
 

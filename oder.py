@@ -27,7 +27,9 @@ class ODER:
 
             cursor.execute(sql)
             db.commit()
+            oderid = cursor.lastrowid
             print('数据插入成功!')
+            return oderid
         except Exception as e:
             print('操作错误')
             print(e)

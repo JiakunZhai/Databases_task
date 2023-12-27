@@ -7,7 +7,7 @@ CREATE TABLE FoodTable(
 CREATE TABLE Menus(
     menuid INT AUTO_INCREMENT PRIMARY KEY,
     menuname varchar(20),
-    mprice varchar(20)
+    mprice DECIMAL
 );
 
 CREATE TABLE Worker(
@@ -33,6 +33,7 @@ CREATE TABLE Oder(
     FOREIGN KEY(workerid) REFERENCES Worker(workerid)
 );
 
+
 -- 为 'Oder' 表的 'oderid' 列添加索引
 ALTER TABLE Oder ADD INDEX idx_oderid (oderid);
 -- 为 'Oder' 表的 'oderprice' 列添加索引
@@ -40,15 +41,13 @@ ALTER TABLE Oder ADD INDEX idx_oderprice (oderprice);
 -- 为 'Oder' 表的 'odertime' 列添加索引
 ALTER TABLE Oder ADD INDEX idx_odertime (odertime);
 
-CREATE TABLE Expens(
-    oderid INT PRIMARY KEY,
-    tableid INT,
-    oderprice DECIMAL,
-    odertime DATETIME,
-    FOREIGN KEY(tableid) REFERENCES FoodTable(tableid),
-    FOREIGN KEY(oderid) REFERENCES Oder(oderid),
-    FOREIGN KEY(oderprice) REFERENCES Oder(oderprice),
-    FOREIGN KEY(odertime) REFERENCES Oder(odertime)
+--消费记录表
+CREATE TABLE Menuoder(
+    oderid INT,
+    menuid INT,
+    menunum INT,
+	PRIMARY KEY(oderid),
+    FOREIGN KEY(menuid) REFERENCES Menus(menuid)
 );
 
 INSERT INTO FoodTable(tablenumber, tablestate) VALUES

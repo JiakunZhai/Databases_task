@@ -25,6 +25,7 @@ class USER:
 
             cursor.execute(sql)
             db.commit()
+            userid = cursor.lastrowid
             print('注册成功')
 
         except Exception as e:
@@ -48,6 +49,7 @@ class USER:
                     print("用户编号:", row[0])
                     print("用户名:", row[1])
                     print("用户手机号:", row[2])
+            return userid
         finally:
             db.close()
 
@@ -114,6 +116,7 @@ class USER:
             db.close()
 
     def login(self):
+        res = 0
         try:
             db = USER.connect_db()
             cursor = db.cursor()
@@ -127,7 +130,8 @@ class USER:
                 userid = result[0]
                 username = result[1]
                 userphone = result[2]
-                return USER(userid, username, userphone)
+                res = res+1
+                return (USER(userid, username, userphone), res)
             else:
                 return None
         except Exception as e:
