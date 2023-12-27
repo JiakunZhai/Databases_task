@@ -3,6 +3,7 @@ from menus import *
 from worker import *
 from oder import *
 from foodtable import *
+from menuoder import *
 import pymysql
 
 # 定义全局变量
@@ -11,6 +12,7 @@ tablenum = 0        # 餐桌编号
 oderid = 0          # 订单id
 total_cost = 0      # 订单总价
 userid = 0
+workerid = 0
 
 # 主要函数封装
 class MAIN:
@@ -103,6 +105,43 @@ class MAIN:
         finally:
             db.close()
 
+    def oder_inster(oderid, userid, ):
+        # 对现在的点餐数量结账
+        print("欢迎用餐".center(20, '='))
+        select = str(input("是否结账？Y/N"))
+
+        if select == "Y":
+            if menuOrderList:
+                print("")
+                print("请确认您的点单情况".center(26, "="))
+                table = PrettyTable()
+                table.field_names = ["菜品编号", "菜品名称", "数量", "单价", "总价"]
+
+                for dish in menuOrderList:
+                    table.add_row(
+                        [dish[0], dish[1], dish[2], dish[3], dish[4]])
+
+                table.add_row(["总计", "", "", "", total_cost])
+                print(table)
+                res = str(input("请确认订单是是否有误？Y/N"))
+                if res == 'Y':
+                    table = PrettyTable()
+                    table.add_row(["总计", total_cost])
+                    print(table)
+                    oder = ODER(None, tablenum, userid, None, total_cost)
+                    oderid = oder.insert_order()
+
+
+            else:
+                print("您还未点任何菜品")
+
+
+        else:
+            return
+
+
+
+
 # 界面封装
 
 
@@ -151,6 +190,7 @@ class PAGE:
                 # 这个地方应该是点菜的函数这个函数应该将点了什么菜输出一遍，
                 # 然后再订单菜谱表中插入，但是获取的订单编号应该如何做？
                 # 订单编号可以在插入的时候获取到，那么还需要讲
+
                 pass
             elif s == 'exit':
                 break

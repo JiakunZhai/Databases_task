@@ -3,9 +3,10 @@ import pymysql
 
 class ODER:
 
-    def __init__(self, oderid, tableid, userid, odertime, oderprice):
+    def __init__(self, oderid, tableid, userid, odertime, oderprice, workerid):
         self.oderid = oderid
         self.tableid = tableid
+        self.workerid = workerid
         self.userid = userid
         self.odertime = odertime
         self.oderprice = oderprice
@@ -22,7 +23,7 @@ class ODER:
             cursor = db.cursor()
 
             sql = "INSERT INTO OrderInfo (tableid, userid, workerid, odertime, orderprice) VALUES (" + str(
-                self.tableid) + ", " + str(self.userid) + ", " + str(self.workerid) + ", '" + "now()" + "', " + str(self.orderprice) + ");"
+                self.tableid) + ", " + str(self.userid) + ", " + str(self.workerid) + ", '" + "now()" + "', " + str(self.oderprice) + ");"
             print('sql:', sql)
 
             cursor.execute(sql)
@@ -43,7 +44,7 @@ class ODER:
             cursor = db.cursor()
 
             sql = "SELECT * FROM OrderInfo WHERE orderid=" + \
-                str(self.orderid) + ";"
+                str(self.oderid) + ";"
             print('sql:', sql)
 
             cursor.execute(sql)
@@ -73,7 +74,7 @@ class ODER:
             cursor = db.cursor()
 
             sql = "UPDATE OrderInfo SET tableid=" + str(self.tableid) + ", userid=" + str(self.userid) + ", workerid=" + str(
-                self.workerid) + ", odertime='" + "now()" + "', orderprice=" + str(self.orderprice) + " WHERE orderid=" + str(self.orderid) + ";"
+                self.workerid) + ", odertime='" + "now()" + "', orderprice=" + str(self.oderprice) + " WHERE orderid=" + str(self.oderid) + ";"
             print('sql:', sql)
 
             cursor.execute(sql)
